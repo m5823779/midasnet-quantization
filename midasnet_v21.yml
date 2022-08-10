@@ -1,0 +1,65 @@
+models:
+#  - name: midasnet_v21
+#    launchers:
+#      - framework: onnx_runtime
+#        model: ./model/onnx/midasnet_v21.onnx
+#        adapter: classification
+#    datasets:
+#      - name: imagenet_1000_classes
+#        annotation_conversion:
+#            converter: imagenet
+#            annotation_file: val.txt
+#        annotation: imagenet1000.pickle
+#        data_source: val
+#        reader: opencv_imread
+#
+#        preprocessing:
+#          - type: resize
+#            size: 384
+#            interpolation: BICUBIC
+#          - type: normalization
+#            mean: [123.675, 116.28, 103.53]
+#            std: [58.395, 57.12, 57.375]
+#
+#        metrics:
+#          - name: accuracy@top1
+#            type: accuracy
+#            top_k: 1
+#            reference: 0.7786
+#          - name: accuracy@top5
+#            type: accuracy
+#            top_k: 5
+#            reference: 0.9387
+  - name: midasnet_v21
+    launchers:
+      - framework: openvino
+        device: CPU
+        model: ./model/openvino/midasnet_v21.xml
+#        weight: ./model/openvino/midasnet_v21.bin
+        adapter: classification
+        batch: 1
+
+    datasets:
+      - name: imagenet_1000_classes
+        annotation_conversion:
+            converter: imagenet
+            annotation_file: val.txt
+        annotation: imagenet1000.pickle
+        data_source: val
+        reader: opencv_imread
+
+        preprocessing:
+          - type: resize
+            size: 384
+            interpolation: BICUBIC
+          - type: rgb_to_bgr
+
+        metrics:
+          - name: accuracy@top1
+            type: accuracy
+            top_k: 1
+            reference: 0.7786
+          - name: accuracy@top5
+            type: accuracy
+            top_k: 5
+            reference: 0.9387
