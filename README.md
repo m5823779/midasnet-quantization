@@ -29,8 +29,11 @@ wget https://github.com/isl-org/MiDaS/releases/download/v2_1/model-small-70d6b9c
 ```buildoutcfg
 wget https://image-net.org/data/ILSVRC/2012/ILSVRC2012_img_val.tar
 ```
+or download [ReDWeb_V1](https://sites.google.com/site/redwebcvpr18/) dataset for weight calibration
 
-3) Pytorch to Onnx model
+3) (option) for ReDWeb_V1 dataset run `python gen_val.py` to generate `ReDWeb_validation_360.txt` annotation file 
+
+4) Pytorch to Onnx model
 ```buildoutcfg
 python pytorch_to_onnx.py --model-name=MidasNet --model-path=./ --weights=./model/pytorch/midasnet_v21.pt --import-module=midas.midas_net --input-shape=1,3,384,384 --output-file=./model/onnx/midasnet_v21.onnx --input-names=image --output-names=inverse_depth --opset_version 11
 python pytorch_to_onnx.py --model-name=MidasNet_small --model-path=./ --weights=./model/pytorch/midasnet_v21_small.pt --import-module=midas.midas_net_custom --input-shape=1,3,256,256 --output-file=./model/onnx/midasnet_v21_small.onnx --input-names=image --output-names=inverse_depth --opset_version 11
@@ -44,23 +47,31 @@ wget https://github.com/isl-org/MiDaS/releases/download/v2_1/model-small.onnx -O
 
 4) Onnx to OpenVINO IR model
 ```buildoutcfg
-mo -m ./model/onnx/midasnet_v21.onnx -o ./model/openvino/
-mo -m ./model/onnx/midasnet_v21_small.onnx -o ./model/openvino/
+mo -m ./model/onnx/midasnet_v21.onnx -o ./model/openvino/ --input_shape [1,3,384,384] --layout [n,c,h,w] --reverse_input_channels 
+mo -m ./model/onnx/midasnet_v21_small.onnx -o ./model/openvino/ --input_shape [1,3,256,256] --layout [n,c,h,w] --reverse_input_channels 
 ```
 
 5) accuracy checker (Base line)
 ```buildoutcfg
-accuracy_check -c midasnet_v21.yml
-accuracy_check -c midasnet_v21_small.yml
+accuracy_check -c midasnet_v21_ReDWeb.yml
+accuracy_check -c midasnet_v21_small_ReDWeb.yml
 ```
 
-6) Quantization
+6) Benchmark speed test
 ```buildoutcfg
-pot --config midasnet_v21.json --output-dir ./model/openvino
-pot --config midasnet_v21_small.json --output-dir ./model/openvino
+benchmark_app -m ./model/openvino/midasnet_v21.xml
+benchmark_app -m ./model/openvino/midasnet_v21_small.xml
 ```
 
-7) Test
+7) Quantization
+```buildoutcfg
+pot --config midasnet_v21_ReDWeb.json --output-dir ./model/openvino --evaluate --log-level INFO
+pot --config midasnet_v21_small_ReDWeb.json --output-dir ./model/openvino --evaluate --log-level INFO
+```
+
+8) Do step 6 with new quantize model
+
+9) Test
 ```buildoutcfg
 python run_openvino_cam.py -d CPU midasnet_v21_small.xml
 ```

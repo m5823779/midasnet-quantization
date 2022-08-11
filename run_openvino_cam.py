@@ -67,6 +67,7 @@ while(True):
 
     image = cv2.resize(frame, (w, h), interpolation=cv2.INTER_CUBIC)
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB) # BGR to RGB
+    # image = image.astype('float32')
     image = (image.astype('float32') - mean) / std
     image = image.transpose((2, 0, 1))
 

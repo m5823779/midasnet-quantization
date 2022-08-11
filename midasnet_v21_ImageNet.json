@@ -1,0 +1,21 @@
+{
+    "model": {
+        "model_name": "midasnet_v21",
+        "model": "./model/openvino/midasnet_v21.xml",
+        "weights": "./model/openvino/midasnet_v21.bin"
+    },
+    "engine": {
+        "config": "./midasnet_v21_ImageNet.yml"
+    },
+    "compression": {
+        "algorithms": [
+            {
+                "name": "DefaultQuantization",
+                "params": {
+                    "preset": "mixed",
+                    "stat_subset_size": 384
+                }
+            }
+        ]
+    }
+}

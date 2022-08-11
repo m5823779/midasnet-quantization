@@ -1,0 +1,53 @@
+models:
+  - name: midasnet_onnx
+    launchers:
+      - framework: onnx_runtime
+        model: ./model/onnx/midasnet_v21.onnx
+        adapter: mono_depth
+    datasets:
+      - name: ReDWeb_V1
+        data_source: ReDWeb_V1
+        annotation_conversion:
+            converter: redweb
+            annotation_file: ReDWeb_validation_360.txt
+        annotation: mono_depth.pickle
+        preprocessing:
+          - type: resize
+            size: 384
+            interpolation: BICUBIC
+          - type: normalization
+            mean: [123.675, 116.28, 103.53]
+            std: [58.395, 57.12, 57.375]
+        postprocessing:
+          - type: resize_prediction_depth_map
+          - type: align_prediction_depth_map
+        metrics:
+          - type: rmse
+            reference: 0.07071
+            
+  - name: midasnet_openvino
+    launchers:
+      - framework: openvino
+        device: CPU
+        model: ./model/openvino/midasnet_v21.xml
+        adapter: mono_depth        
+    datasets:
+      - name: ReDWeb_V1
+        data_source: ReDWeb_V1
+        annotation_conversion:
+            converter: redweb
+            annotation_file: ReDWeb_validation_360.txt
+        annotation: mono_depth.pickle
+        preprocessing:
+          - type: resize
+            size: 384
+            interpolation: BICUBIC
+          - type: normalization
+            mean: [123.675, 116.28, 103.53]
+            std: [58.395, 57.12, 57.375]
+        postprocessing:
+          - type: resize_prediction_depth_map
+          - type: align_prediction_depth_map
+        metrics:
+          - type: rmse
+            reference: 0.07071

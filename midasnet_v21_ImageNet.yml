@@ -1,8 +1,8 @@
 models:
-  - name: midasnet_v21_small
+  - name: midasnet_v21
     launchers:
       - framework: onnx_runtime
-        model: ./model/onnx/midasnet_v21_small.onnx
+        model: ./model/onnx/midasnet_v21.onnx
         adapter: classification
     datasets:
       - name: imagenet_1000_classes
@@ -15,7 +15,7 @@ models:
 
         preprocessing:
           - type: resize
-            size: 256
+            size: 384
             interpolation: BICUBIC
           - type: normalization
             mean: [123.675, 116.28, 103.53]
@@ -30,14 +30,12 @@ models:
             type: accuracy
             top_k: 5
             reference: 0.9387
-  - name: midasnet_v21_small
+  - name: midasnet_v21
     launchers:
       - framework: openvino
         device: CPU
-        model: ./model/openvino/midasnet_v21_small.xml
-#        weight: ./model/openvino/midasnet_v21_small.bin
+        model: ./model/openvino/midasnet_v21.xml
         adapter: classification
-        batch: 1
 
     datasets:
       - name: imagenet_1000_classes
@@ -50,7 +48,7 @@ models:
 
         preprocessing:
           - type: resize
-            size: 256
+            size: 384
             interpolation: BICUBIC
           - type: rgb_to_bgr
 

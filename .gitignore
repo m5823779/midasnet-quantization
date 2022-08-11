@@ -1,4 +1,5 @@
 val/
+ReDWeb_V1/
 *.onnx
 *.pt
 *.xml
@@ -6,3 +7,5 @@ val/
 *.mapping
 *.bin
 *.pyc
+*.pickle
+log.txt
