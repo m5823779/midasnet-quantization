@@ -25,11 +25,7 @@ wget https://github.com/isl-org/MiDaS/releases/download/v2_1/model-f6b98070.pt -
 wget https://github.com/isl-org/MiDaS/releases/download/v2_1/model-small-70d6b9c8.pt -O model/pytorch/midasnet_v21_small.pt
 ```
 
-2) download 2012 ImageNet validation dataset
-```buildoutcfg
-wget https://image-net.org/data/ILSVRC/2012/ILSVRC2012_img_val.tar
-```
-or download [ReDWeb_V1](https://sites.google.com/site/redwebcvpr18/) dataset for weight calibration
+2) download download [ReDWeb_V1](https://sites.google.com/site/redwebcvpr18/) dataset for weight calibration
 
 3) (option) for ReDWeb_V1 dataset run `python gen_val.py` to generate `ReDWeb_validation_360.txt` annotation file 
 
@@ -75,6 +71,7 @@ pot --config midasnet_v21_small_ReDWeb.json --output-dir ./model/openvino --eval
 ```buildoutcfg
 python run_openvino_cam.py -d CPU midasnet_v21_small.xml
 ```
+`<path_to_python>\Lib\site-packages\openvino\tools\accuracy_checker\postprocessor` to find post processing
 
 
 
